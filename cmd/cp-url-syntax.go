@@ -58,22 +58,23 @@ func checkCopySyntax(ctx context.Context, cliCtx *cli.Context, encKeyDB map[stri
 	}
 
 	// Verify if source(s) exists.
-	for _, srcURL := range srcURLs {
-		var err *probe.Error
-		if !isRecursive {
-			_, _, err = url2Stat(ctx, srcURL, versionID, false, encKeyDB, timeRef, isZip)
-		} else {
-			_, _, err = firstURL2Stat(ctx, srcURL, timeRef, isZip)
-		}
-		if err != nil {
-			msg := "Unable to validate source `" + srcURL + "`"
-			if versionID != "" {
-				msg += " (" + versionID + ")"
-			}
-			msg += ": " + err.ToGoError().Error()
-			console.Fatalln(msg)
-		}
-	}
+	console.Infoln("WARNING: Copy stat verification disabled")
+	//for _, srcURL := range srcURLs {
+	//	var err *probe.Error
+	//	if !isRecursive {
+	//		_, _, err = url2Stat(ctx, srcURL, versionID, false, encKeyDB, timeRef, isZip)
+	//	} else {
+	//		_, _, err = firstURL2Stat(ctx, srcURL, timeRef, isZip)
+	//	}
+	//	if err != nil {
+	//		msg := "Unable to validate source `" + srcURL + "`"
+	//		if versionID != "" {
+	//			msg += " (" + versionID + ")"
+	//		}
+	//		msg += ": " + err.ToGoError().Error()
+	//		console.Fatalln(msg)
+	//	}
+	//}
 
 	// Check if bucket name is passed for URL type arguments.
 	url := newClientURL(tgtURL)
@@ -181,30 +182,31 @@ func checkCopySyntaxTypeC(ctx context.Context, srcURLs []string, tgtURL string, 
 		}
 	}
 
-	for _, srcURL := range srcURLs {
-		c, srcContent, err := url2Stat(ctx, srcURL, "", false, keys, timeRef, isZip)
-		fatalIf(err.Trace(srcURL), "Unable to stat source `"+srcURL+"`.")
-
-		if srcContent.Type.IsDir() {
-			// Require --recursive flag if we are copying a directory
-			if !isRecursive {
-				operation := "copy"
-				if isMvCmd {
-					operation = "move"
-				}
-				fatalIf(errInvalidArgument().Trace(srcURL), fmt.Sprintf("To %v a folder requires --recursive flag.", operation))
-			}
-
-			// Check if we are going to copy a directory into itself
-			if isURLContains(srcURL, tgtURL, string(c.GetURL().Separator)) {
-				operation := "Copying"
-				if isMvCmd {
-					operation = "Moving"
-				}
-				fatalIf(errInvalidArgument().Trace(), fmt.Sprintf("%v a folder into itself is not allowed.", operation))
-			}
-		}
-	}
+	console.Infoln("WARNING: CopySyntaxTypeC stat verification disabled")
+	//for _, srcURL := range srcURLs {
+	//	c, srcContent, err := url2Stat(ctx, srcURL, "", false, keys, timeRef, isZip)
+	//	fatalIf(err.Trace(srcURL), "Unable to stat source `"+srcURL+"`.")
+	//
+	//	if srcContent.Type.IsDir() {
+	//		// Require --recursive flag if we are copying a directory
+	//		if !isRecursive {
+	//			operation := "copy"
+	//			if isMvCmd {
+	//				operation = "move"
+	//			}
+	//			fatalIf(errInvalidArgument().Trace(srcURL), fmt.Sprintf("To %v a folder requires --recursive flag.", operation))
+	//		}
+	//
+	//		// Check if we are going to copy a directory into itself
+	//		if isURLContains(srcURL, tgtURL, string(c.GetURL().Separator)) {
+	//			operation := "Copying"
+	//			if isMvCmd {
+	//				operation = "Moving"
+	//			}
+	//			fatalIf(errInvalidArgument().Trace(), fmt.Sprintf("%v a folder into itself is not allowed.", operation))
+	//		}
+	//	}
+	//}
 }
 
 // checkCopySyntaxTypeD verifies if the source is a valid list of files and target is a valid folder.
